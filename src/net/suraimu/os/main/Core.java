@@ -1,6 +1,5 @@
 package net.suraimu.os.main;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import static net.suraimu.os.main.Core.cfg;
