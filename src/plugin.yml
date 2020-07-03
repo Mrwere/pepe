@@ -1,0 +1,14 @@
+name: OS
+main: net.suraimu.os.main.Core
+version: 1.0
+author: Mr_were
+description: >
+             Oneshot minigame
+api-version: 1.16
+
+commands:
+  oneshot:
+   description: /oneshot ?
+   aliases:
+   - os
+   usage: /oneshot ?
