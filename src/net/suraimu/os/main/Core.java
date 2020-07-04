@@ -1,7 +1,10 @@
 package net.suraimu.os.main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import net.suraimu.os.listeners.hitEvent;
 import static net.suraimu.os.main.Core.cfg;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,18 +20,25 @@ public class Core extends JavaPlugin{
     public static Map<String, String> msgs;
     public static String prefix;
     public static Map<String, Boolean> activearenas;
+    public static Map<String, ArrayList<String>> arenaplayers;
+    public static Map<String, String> playingplayers;
+    public static Random rand;
     
 public void onEnable(){
         plugin = this;
         cfg = plugin.getConfig();
         msgs = new HashMap<String, String>();
         activearenas = new HashMap<String, Boolean>();
+        arenaplayers = new HashMap<>();
+        playingplayers = new HashMap<>();
         addDefaults();
-        prefix = cfg.getString("prefix");        
+        prefix = cfg.getString("prefix"); 
+        rand = new Random();
         
 getCommand("oneshot").setExecutor((CommandExecutor) new oscommand());
 
 getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', prefix+"&aenabled"));
+getServer().getPluginManager().registerEvents(new hitEvent(), this);
 }
 
 public void onDisable(){
@@ -42,7 +52,7 @@ public static void updateMsgs(){
 }
 
 public void addDefaults(){
-     cfg.addDefault("prefix", "&e&lOS &6>> ");
+     cfg.addDefault("prefix", "&e&lOS&7  ");
 
      if(!(cfg.getConfigurationSection("messages") == null))for(String message : cfg.getConfigurationSection("messages").getKeys(false)) msgs.put(message, cfg.getString("messages."+message));
 
