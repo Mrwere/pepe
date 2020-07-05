@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import net.suraimu.os.listeners.hitEvent;
+import net.suraimu.os.listeners.onDeath;
 import static net.suraimu.os.main.Core.cfg;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +39,7 @@ public void onEnable(){
 getCommand("oneshot").setExecutor((CommandExecutor) new oscommand());
 
 getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', prefix+"&aenabled"));
+getServer().getPluginManager().registerEvents(new onDeath(), this);
 getServer().getPluginManager().registerEvents(new hitEvent(), this);
 }
 
@@ -52,7 +54,9 @@ public static void updateMsgs(){
 }
 
 public void addDefaults(){
+     cfg.options().copyDefaults(true);
      cfg.addDefault("prefix", "&e&lOS&7  ");
+     cfg.addDefault("messages.shotby", "§c§lYou were shot by §4§l%KILLER%");
 
      if(!(cfg.getConfigurationSection("messages") == null))for(String message : cfg.getConfigurationSection("messages").getKeys(false)) msgs.put(message, cfg.getString("messages."+message));
 
@@ -60,6 +64,7 @@ public void addDefaults(){
           for(String thearena : cfg.getConfigurationSection("arena").getKeys(false)){
           if(cfg.get("arena."+thearena+".enabled") != null) activearenas.put(thearena, cfg.getBoolean("arena."+thearena+".enabled"));
        }
+     plugin.saveConfig();
 }
 
 }

@@ -2,6 +2,7 @@ package net.suraimu.os.utils;
 
 import static net.suraimu.os.main.Core.activearenas;
 import static net.suraimu.os.main.Core.arenaplayers;
+import static net.suraimu.os.main.Core.cfg;
 import static net.suraimu.os.main.Core.playingplayers;
 import static net.suraimu.os.main.Core.plugin;
 import static net.suraimu.os.main.Core.prefix;
@@ -11,15 +12,17 @@ import static net.suraimu.os.utils.cpRespawn.cpRespawn;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.inventory.ItemStack;
 
 
 public class lobbyCountdown {
 
 
 
-        public static int countdown = 15;
+        public static int countdown;
         static int cdtask;
 
 
@@ -28,8 +31,6 @@ public class lobbyCountdown {
                        
                         @Override
                         public void run() {
-
-                            
        if(countdown > 0){
            if(arenaplayers.get(arena).isEmpty()) Bukkit.getScheduler().cancelTask(cdtask);;
            for(int i = 0; arenaplayers.get(arena).size() > i; i++){
@@ -40,7 +41,7 @@ public class lobbyCountdown {
              cp.setLevel(countdown);
              if(countdown < 6){
              cp.sendTitle(ChatColor.translateAlternateColorCodes('&',prefix+"&5"+arena+""),
-                          ChatColor.translateAlternateColorCodes('&',"&7starting in &e"+countdown+"&7s!"));
+                          ChatColor.translateAlternateColorCodes('&',"&7starting in &e"+countdown+"&7s!"),0,8,0);
              //Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',prefix+"&5"+arena+" &7starting in.. &e"+countdown+"&7s"));
              cp.playSound(cp.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100, 100);
            }
@@ -48,6 +49,8 @@ public class lobbyCountdown {
                
                
             countdown--;
+                  } else if(!(arenaplayers.get(arena).size() >= cfg.getInt("arena."+arena+".minplayers"))){
+                      countdown = cfg.getInt("arena."+arena+".lobbycountdown");
                   }else{
                                    if(activearenas.get(arena)) activearenas.put(arena, false);
                                    net.suraimu.os.utils.scoreBoard.sbUpdate(arena);
@@ -57,10 +60,13 @@ public class lobbyCountdown {
                                    cp.setLevel(0);
                                    cp.setGameMode(GameMode.ADVENTURE);
                                    cp.setScoreboard(board);
+                                   cp.getInventory().clear();
+                                   cp.getInventory().addItem(new ItemStack(Material.ARROW));
+                                   cp.getInventory().addItem(new ItemStack(Material.BOW));
                                    playingplayers.put(cp.getName(), arena);
                                    obj.getScore(cp.getName()).setScore(0);
                                 }
-                                   countdown = 60;
+                                   cfg.getInt("arena."+arena+".lobbycountdown");
                                    Bukkit.getScheduler().cancelTask(cdtask);
                                 }
                                
